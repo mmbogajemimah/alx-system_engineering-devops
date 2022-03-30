@@ -1,2 +1,5 @@
 #!/bin/bash
 ln -s /bin/ls __ls__
+[main f8c4aad] 14th Commit
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 0x00-shell_basics/14-copy_html
