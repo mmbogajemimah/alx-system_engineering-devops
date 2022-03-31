@@ -1,2 +1,2 @@
 #!/bin/bash
-find $(pwd) -user guillaume chown betty {} +
+find $(pwd) -user guillaume -exec chown betty {} +
