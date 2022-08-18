@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# loops from 1 to 10 and prints "bad luck" on 4th iteration, "good luck" on 8th, "Best School" on the rest
+i=0
+while (( i<10 ))
+do
+	if (( i==3 ))
+	then
+		echo "bad luck"
+	elif (( i==7 ))
+	then
+		echo "good luck"
+	else
+		echo "Best school"
+	fi
+	(( i++ ))
+done
