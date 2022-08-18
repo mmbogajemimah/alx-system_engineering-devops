@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Uses a for loop and if statement
+for ((i=0; i<10; i++))
+do
+	echo "Best School"
+	if [[ $i -eq 8 ]]
+	then
+		echo "Hi"
+	fi
+done
