@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Uses a for loop and if statement
-for ((i=0; i<10; i++))
+i=0;
+while (( i<10 ))
 do
 	echo "Best School"
-	if [[ $i -eq 8 ]]
+	if (( i==8 ))
 	then
 		echo "Hi"
 	fi
+	(( i++ ))
 done
