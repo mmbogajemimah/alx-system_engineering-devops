@@ -21,6 +21,7 @@ The Replica node may conduct read operations while the Primary node handles all 
 
 
 ### Issues With This Infrastructure
+#### Where are SPOF
 
 The entire website would be unable to update itself if the Primary MySQL database server went down including adding or removing users. Additionally, SPOFs include the load-balancing server and the application server that connects to the main database server.
 
