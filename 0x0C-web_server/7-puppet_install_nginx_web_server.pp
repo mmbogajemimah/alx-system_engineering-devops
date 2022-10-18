@@ -1,23 +1,24 @@
-# Install nginx with puppet
+#NNew Server with Nginx
+
+exec { 'update system':
+        command => '/usr/bin/apt-get update',
+}
+
 package { 'nginx':
-  ensure   => '1.18.0',
-  provider => 'apt',
+	ensure => 'installed',
+	require => Exec['update system']
 }
 
-file { 'Hello World':
-  path    => '/var/www/html/index.nginx-debian.html',
-  content => 'Hello World',
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
 }
 
-file_line { 'Hello World':
-  path  => '/etc/nginx/sites-available/default',
-  after => 'server_name _;',
-  line  => '\trewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;',
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
 }
 
-exec { 'service':
-  command  => 'service nginx start',
-  provider => 'shell',
-  user     => 'root',
-  path     => '/usr/sbin/service',
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
 }
