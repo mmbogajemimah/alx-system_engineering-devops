@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Install Nginx and the init file
-sudo apt update -y
-sudo apt upgrade -y
-sudo apt install nginx -y
-sudo service nginx start
-echo "Hello World!" | tee /var/www/html/index.nginx-debian.html
+# Nginx where it should be listening on port 80
+apt-get -y update
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+echo Holberton School > /var/www/html/index.nginx-debian.html
+sed -i "/^\sserver_name.*/a\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default;
+service nginx start
