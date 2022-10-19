@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # Nginx where it should be listening on port 80
-#!/usr/bin/env bash
 # install nginx and adjust default homepage
-apt-get -y update
+apt update
 apt-get -y install nginx
-sed -i "21s/^listen .*/listen 80" /etc/nginx/sites-enabled/defult
-ufw allow 'Nginx HTTP'
-echo Holberton School > /var/www/html/index.nginx-debian.html
-service nginx start
+sudo ufw allow 'Nginx HTTP'
+sudo ufw enable
+sudo mkdir -p /var/www/html
+sudo chmod -R 755 /var/www
+echo 'Hello World!' > /var/www/html/index.html
+if [ "$(pgrep -c nginx)" -le 0 ]; then
+	service nginx start
+else
+	service nginx restart
+fi
