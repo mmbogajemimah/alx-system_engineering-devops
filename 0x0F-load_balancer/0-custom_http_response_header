@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # web-02 to be identical to web-01
-
-sudo install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 sudo ufw allow 'Nginx HTTP'
 if [ -d "/var/www" ]; then
 	sudo chown -R "$USER":"$USER" /var/www
@@ -21,27 +21,25 @@ done
 echo "Hello World!" > /var/www/html/index.html
 echo "Ceci n'est pas une page" > /var/www/html/error_404.html
 
-sudo cp /etc/nginx/sites-enabled/default nginx-sites-enabled_default.backup
-
 server_config=\
 "server {
 		listen 80 default_server;
 		listen [::]:80 default_server;
 		root /var/www/html;
-		index index.html index.html index.nginx-debian.html
+		index index.html index.html index.nginx-debian.html;
 		server_name_;
 		add_header X-Served-By \$hostname;
-	
-		location /redirect_me {
-		   return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+		location / {
+			try_files \$uri \$uri/ =404;
+		}
+		if (\$request_filename ~ redirect_me){
+			rewrite ^ https://youtube.com/ permanent;
 		}
 		error_page 404 / error_404.html;
 		location = /error_404.html {
 			internal;
 		}
 }"
-
-echo "$server_config" | sudo dd status=none of=/etc/nginx/sites-enabled/default
 
 if [ "$(pgrep -c nginx)" -le 0 ]; then
 	sudo service nginx start
