@@ -1,15 +1,34 @@
 #!/usr/bin/env bash
 # Nginx where it should be listening on port 80
 # install nginx and adjust default homepage
-apt update
-apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-sudo ufw enable
+# Instal nginx
+sudo apt update
+sudo apt install -y nginx
+
+# Create default nginx folder for pages
 sudo mkdir -p /var/www/html
-sudo chmod -R 755 /var/www
-echo 'Hello World!' > /var/www/html/index.html
-if [ "$(pgrep -c nginx)" -le 0 ]; then
-	service nginx start
-else
-	service nginx restart
-fi
+
+# Create default index.html file
+sudo touch /var/www/html/index
+sudo touch /var/www/html/index.html
+sudo touch /var/www/html/index.htm
+sudo touch /var/www/html/index.nginx-debian.html
+
+# Change ownership of file and directories to current user
+# in order to edit the file.
+sudo chown -R "$USER":"$USER" /var/www/html/index
+sudo chown -R "$USER":"$USER" /var/www/html/index.html
+sudo chown -R "$USER":"$USER" /var/www/html/index.htm
+sudo chown -R "$USER":"$USER" /var/www/html/index.nginx-debian.html
+
+# Append hello world to file
+echo "Hello World!" > /var/www/html/index
+echo "Hello World!" > /var/www/html/index.html
+echo "Hello World!" > /var/www/html/index.htm
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# add to firewall
+sudo ufw allow 'Nginx HTTP'
+
+# start nginx server
+sudo service nginx restart
