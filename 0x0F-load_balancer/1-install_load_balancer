@@ -1,54 +1,19 @@
 #!/usr/bin/env bash
-#Installing, Configuration and starting load balancer
-sudo apt-get update
-sudo apt-get -y install --no-install-recommends software-properties-common
-sudo add-apt-repository -y ppa:vbernat/haproxy-2.4
-sudo apt-get -y install haproxy
+# Setup up HAproxy load balancer
 
-DOMAIN_NAME='jemimahmmboga.tech'
-INIT_FILE='/etc/default/haproxy'
-CONFIG_FILE='/etc/haproxy/haproxy.cfg'
-HAPROXY_LB_CONFIG=\
+# Uninstall previous HAproxy
+sudo service haproxy stop
+sudo apt-get purge -y haproxy
 
-"
-#--$DOMAIN_NAME-params-begin--
-backend $DOMAIN_NAME-backend
-	balance roundrobin
-	server 37297-web-01 54.144.239.142 check
-	server 37297-web-02 100.24.205.221 check
-frontend $DOMAIN_NAME-frontend
-	bind *:80
-	mode http
-	default_backend $DOMAIN_NAME-backend
-#--$DOMAIN_NAME-params-end--
-"
+# Install HAproxy.
+sudo apt update
+sudo apt install -y haproxy
 
-[ -f "$INIT_FILE" ] || touch "$INIT_FILE"
-[ -f "$CONFIG_FILE" ] || touch "$CONFIG_FILE"
+# Enable HAProxy to be started by the init script.
+sudo sed -i '$aENABLED=1' /etc/default/haproxy
 
-CONFIG_WORDS=$(grep -Eco "$DOMAIN_NAME-backend" < $CONFIG_FILE)
+# Setup load balancing frontend and backend options
+sudo sed -i '$a\\nfrontend http_front\n\tbind *:80\n\tstats uri /haproxy?stats\n\tdefault_backend http_back\n\nbackend http_back\n\tbalance roundrobin\n\tserver 37297-web-01 54.144.239.142:80 check\n\tserver 37297-web-02 100.24.205.221:80 check' /etc/haproxy/haproxy.cfg
 
-if [ "$(grep -Eco '^ENABLED=[01]$' < $INIT_FILE)" -gt 0 ]; then
-	sed -i 's/^ENABLED=0$/ENABLED=1/' "$INIT_FILE"
-else
-	echo 'ENABLED=1' >> $INIT_FILE
-fi
-
-if [ "$CONFIG_WORDS" -eq 0 ]; then
-	echo -e "$HAPROXY_LB_CONFIG" >> $CONFIG_FILE
-else
-	start_tkn="#--$DOMAIN_NAME-params-begin--"
-	end_tkn="#--$DOMAIN_NAME-params-end--"
-	a=$(grep -onE "$start_tkn" < "$CONFIG_FILE" | cut -d : -f1)
-	b=$(grep -onE "$end_tkn" < "$CONFIG_FILE" | cut -d : -f1)
-	a=$((a - 1))
-	b=$((b + 1))
-	sed -i "$a,$b"d "$CONFIG_FILE"
-	echo -en "$HAPROXY_LB_CONFIG" >> $CONFIG_FILE
-fi
-
-if [ "$(pgrep -c haproxy)" -le 0 ]; then
-	service haproxy start
-else
-	service haproxy restart
-fi
+# Restart HAproxy
+sudo service haproxy restart
