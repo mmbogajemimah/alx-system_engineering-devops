@@ -1,4 +1,4 @@
-![My Image](img.jpg)
+![My Image](https://i.redd.it/vri4ra46xi531.jpg)
 ## COMPANY XYZ SERVER FAIL INCIDENT REPORT
 
 #### Issue Summary
