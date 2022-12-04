@@ -1,5 +1,6 @@
+![My Image](img.jpg)
 ## COMPANY XYZ SERVER FAIL INCIDENT REPORT
- 
+
 #### Issue Summary
 On November 26th 4:33 PM EAT all the servers of companyXYZ backend went down. This was caused  by rebooting one faulty server. On rebooting this server an error from another server caused all servers to go down too.
 
